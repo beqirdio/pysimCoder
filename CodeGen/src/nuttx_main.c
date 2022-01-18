@@ -36,6 +36,7 @@ static char rtversion[] = "0.9";
 static int prio = 99;
 static int verbose = 0;
 static int wait = 0;
+static int extclock = 0;
 double FinalTime = 0.0;
 
 double get_run_time()
@@ -140,6 +141,7 @@ void print_usage(void)
          "\n"
          "OPTIONS:\n"
          "  -h  print usage\n"
+	 "  -f <final time> set the final time of the execution\n"
 	 "  -v  verbose output\n"
 	 "  -p <priority>  set rt task priority (default 99)\n"
 	 "  -e  external clock\n"

@@ -40,6 +40,7 @@ class Scene(QGraphicsScene):
         self.Ts = '0.01'
         self.script = ''
         self.Tf = '10'
+        self.prio = ''
 
         self.undoList = []
 
@@ -89,6 +90,7 @@ class Scene(QGraphicsScene):
         etree.SubElement(sim,'AddObj').text = self.addObjs
         etree.SubElement(sim,'ParScript').text = self.script
         etree.SubElement(sim,'Tf').text = self.Tf
+        etree.SubElement(sim,'Priority').text = self.prio
         for item in dgmBlocks:
             item.save(root)
         for item in dgmConnections:
@@ -121,7 +123,10 @@ class Scene(QGraphicsScene):
         self.Tf = sim.findtext('Tf')
         if self.Tf==None:
             self.Tf=''
-
+        self.prio = sim.findtext('Priority')
+        if self.prio==None:
+            self.prio=''
+            
         blocks = root.findall('block')
         for item in blocks:
             self.loadBlock(item)
@@ -182,24 +187,11 @@ class Scene(QGraphicsScene):
         self.undoList = [msg]
               
     def loadBlock(self, item, dx = 0, dy = 0):
-        # --- For old files without block width ---
-        try:
-            width = int(item.findtext('width'))
-        except:
-            width = BWmin
-        # --------------------------------------------------
-        try:
-            b = Block(None, self, item.findtext('name'),
-                      int(item.findtext('inp')), int(item.findtext('outp')),
-                      item.findtext('inset')=='1', item.findtext('outset')=='1', item.findtext('icon'),
-                      item.findtext('params'), item.findtext('help'),
-                      width, item.findtext('flip')=='1' )
-        except:
-            # Compatibility of files from previous versions
-            b = Block(None, self, item.findtext('name'),
-                      int(item.findtext('inp')), int(item.findtext('outp')),
-                      item.findtext('ioset')=='1', item.findtext('ioset')=='1', item.findtext('icon'),
-                      item.findtext('params'), width, item.findtext('flip')=='1' )
+        b = Block(None, self, item.findtext('name'),
+                  int(item.findtext('inp')), int(item.findtext('outp')),
+                  item.findtext('inset')=='1', item.findtext('outset')=='1', item.findtext('icon'),
+                  item.findtext('params'), item.findtext('help'),
+                  int(item.findtext('width')), item.findtext('flip')=='1' )
         b.setPos(float(item.findtext('posX'))+dx, float(item.findtext('posY'))+dy)
 
     def find_itemAt(self, pos):
@@ -223,6 +215,7 @@ class Scene(QGraphicsScene):
         dialog.Ts.setText(self.Ts)
         dialog.parscript.setText(self.script)
         dialog.Tf.setText(self.Tf)
+        dialog.prio.setText(self.prio)
         res = dialog.exec_()
         if res != 1:
             return
@@ -231,6 +224,7 @@ class Scene(QGraphicsScene):
         self.addObjs = str(dialog.addObjs.text())
         self.Ts = str(dialog.Ts.text())
         self.script = str(dialog.parscript.text())
+        self.prio =  str(dialog.prio.text())
         self.Tf = str(dialog.Tf.text())
         
     def codegen(self, flag):
@@ -375,7 +369,10 @@ class Scene(QGraphicsScene):
             cmd  = '\n'
             cmd += 'import matplotlib.pyplot as plt\n'
             cmd += 'import numpy as np\n\n'
-            cmd += 'os.system("./' + self.mainw.filename + ' -f ' + self.Tf + '")\n'
+            prio = self.prio.replace(' ','')
+            if prio != '':
+                prio = ' -p ' + prio
+            cmd += 'os.system("./' + self.mainw.filename + prio + ' -f ' + self.Tf + '")\n'
             fnm = self.mainw.filename
             cmd += 'os.system("' + 'rm -r ' + fnm + ' ' + fnm + '_gen' + '" )'
 
