@@ -12,20 +12,29 @@ from numpy import array, ones
 
 class RCPblk:
     def __init__(self, *args):
-        if len(args) == 8:
+        if len(args) == 7:
+            (fcn,pin,pout,nx,uy,realPar,intPar) = args
+            dimPin = ones(len(pin), dtype = int)
+            dimPout = ones(len(pout), dtype = int)
+            dimRatio = []
+            str=''
+        elif (len(args) == 8) and (type(args[7]) is not list):
             (fcn,pin,pout,nx,uy,realPar,intPar,str) = args
             dimPin = ones(len(pin), dtype = int)
             dimPout = ones(len(pout), dtype = int)
-        elif len(args) == 7:
-            (fcn,pin,pout,nx,uy,realPar,intPar) = args
-            str=''
+            dimRatio = []
+        elif (len(args) == 8) and (type(args[7]) is list):
+            (fcn,pin,pout,dimRatio,nx,uy,realPar,intPar) = args
             dimPin = ones(len(pin), dtype = int)
             dimPout = ones(len(pout), dtype = int)
+            str = ''
         elif len(args) == 9:
             (fcn,pin,pout,dimPin,dimPout,nx,uy,realPar,intPar) = args
+            dimRatio = []
             str=''
         elif len(args) == 10:
             (fcn,pin,pout,dimPin,dimPout,nx,uy,realPar,intPar,str) = args
+            dimRatio = []
         else:
             raise ValueError("Needs 6 to 9 arguments; received %i." % len(args))
 
@@ -39,6 +48,7 @@ class RCPblk:
         self.realPar = array(realPar)
         self.intPar = array(intPar)
         self.str = str
+        self.dimRatio = dimRatio
 
     def __str__(self):
         """String representation of the Block"""
