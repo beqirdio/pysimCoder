@@ -23,8 +23,8 @@ class RCPblk:
         self.fcn = fcn
         self.pin = array(pin)
         self.pout = array(pout)
-        self.dimPin = ones(self.pin.shape)
-        self.dimPout = ones(self.pout.shape)
+        self.dimPin = ones(self.pin.shape, dtype = int)
+        self.dimPout = ones(self.pout.shape, dtype = int)
         self.nx = array(nx)
         self.uy = array(uy)
         self.realPar = array(realPar)
