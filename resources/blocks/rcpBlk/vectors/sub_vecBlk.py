@@ -1,15 +1,14 @@
 from supsisim.RCPblk import RCPblk
 
-def sub_vecBlk(pin, pout, vd):
+def sub_vecBlk(pin, pout):
     """
 
-    Call:   sub_vecBlk(pin, pout, vd)
+    Call:   sub_vecBlk(pin, pout)
 
     Parameters
     ----------
        pin: connected input port
        pout: connected output port(s)
-       vd (vect_dim): dimensions of vectors for subtraction
 
     Returns
     -------
@@ -17,5 +16,5 @@ def sub_vecBlk(pin, pout, vd):
 
     """
 
-    blk = RCPblk('sub_vec',pin,pout,[vd],[vd],[0,0],1,[],[vd])
+    blk = RCPblk('sub_vec',pin,pout,[1,1],[0,0],1,[],[])
     return blk

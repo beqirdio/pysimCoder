@@ -1,14 +1,13 @@
 from supsisim.RCPblk import RCPblk
 
-def printvecBlk(pin, vec_dim):
+def printvecBlk(pin):
     """
 
-    Call:   printvecBlk(pin, vec_dim)
+    Call:   printvecBlk(pin)
 
     Parameters
     ----------
        pin: connected input port(s)
-       vec_dim: dimension of input vector signals
 
     Returns
     -------
@@ -16,5 +15,5 @@ def printvecBlk(pin, vec_dim):
 
     """
 
-    blk = RCPblk('print_vec',pin,[],vec_dim,[0],[0,0],1, [], vec_dim)
+    blk = RCPblk('print_vec',pin,[],[0,0],1, [], [])
     return blk

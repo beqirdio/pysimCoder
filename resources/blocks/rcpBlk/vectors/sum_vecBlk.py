@@ -1,15 +1,14 @@
 from supsisim.RCPblk import RCPblk
 
-def sum_vecBlk(pin, pout, vd):
+def sum_vecBlk(pin, pout):
     """
 
-    Call:   sum_vecBlk(pin, pout, vd)
+    Call:   sum_vecBlk(pin, pout)
 
     Parameters
     ----------
        pin: connected input port
        pout: connected output port(s)
-       vd (vect_dim): dimensions of vectors for addition
 
     Returns
     -------
@@ -17,5 +16,5 @@ def sum_vecBlk(pin, pout, vd):
 
     """
 
-    blk = RCPblk('sum_vec',pin,pout,[vd],[vd],[0,0],1,[],[vd])
+    blk = RCPblk('sum_vec',pin,pout,[1,1],[0,0],1,[],[])
     return blk

@@ -1,19 +1,18 @@
 from supsisim.RCPblk import RCPblk
 
 
-def gain_vecBlk(pin, pout, gains, vd):
+def gain_vecBlk(pin, pout, gains):
     """
 
     Gain of Matrix block
 
-    Call: gain_vecBlk(pin, pout, gains, vec_dim)
+    Call: gain_vecBlk(pin, pout, gains)
 
     Parameters
     ----------
        pin: connected input port(s)
        pout: connected output port(s)
        gains : matrix or single coefficient
-       vd (vec_dim): dimensions of input/output vector
 
     Returns
     -------
@@ -21,5 +20,5 @@ def gain_vecBlk(pin, pout, gains, vd):
 
     """
 
-    blk = RCPblk('gain_vec',pin,pout, vd, vd, [0,0],1,[gains],vd)
+    blk = RCPblk('gain_vec',pin,pout, [1,1], [0,0],1,[gains],[])
     return blk
