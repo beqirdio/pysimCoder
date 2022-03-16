@@ -1,1 +1,1 @@
-{"lib": "vectors", "name": "Vector Sub", "ip": 2, "op": 1, "stin": 0, "stout": 0, "icon": "PM", "params": "sub_vecBlk|Dimensions: 3", "help": "Vector subtraction block.\n\n"}
+{"lib": "vectors", "name": "Vector Sub", "ip": 2, "op": 1, "stin": 0, "stout": 0, "icon": "PM", "params": "sub_vecBlk", "help": "Vector subtraction block.\n\n"}

@@ -1,1 +1,1 @@
-{"lib": "vectors", "name": "Gain_Vector", "ip": 1, "op": 1, "stin": 1, "stout": 1, "icon": "MULT", "params": "gain_vecBlk|Gains: 1|Dimensions: 3", "help": "Implements the multiplication of the vector input with a matrix of coefficients.\n"}
+{"lib": "vectors", "name": "Gain_Vector", "ip": 1, "op": 1, "stin": 1, "stout": 1, "icon": "MULT", "params": "gain_vecBlk|Gains: 1", "help": "Implements the multiplication of the vector input with a matrix of coefficients.\n"}

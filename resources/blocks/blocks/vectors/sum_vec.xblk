@@ -1,1 +1,1 @@
-{"lib": "vectors", "name": "Vector Sum", "ip": 2, "op": 1, "stin": 1, "stout": 0, "icon": "SUM", "params": "sum_vecBlk|Dimensions: 3", "help": "Vector addition block.\n\n"}
+{"lib": "vectors", "name": "Vector Sum", "ip": 2, "op": 1, "stin": 1, "stout": 0, "icon": "SUM", "params": "sum_vecBlk", "help": "Vector addition block.\n\n"}
