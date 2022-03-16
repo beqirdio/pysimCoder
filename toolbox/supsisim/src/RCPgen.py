@@ -100,6 +100,22 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
         strLn += str(mat(blk.nx).tolist())[2:-2] + "};\n"
         f.write(strLn)
     f.write("\n")
+    
+    f.write("/* Dimensions */\n")
+    for n in range(0,N):
+        blk = Blocks[n]
+        strLn = "static int dimIn_" + str(n) +"[] = "
+        dimIn = str(list(blk.dimPin))
+        dimIn = dimIn.replace("[", "{")
+        dimIn = dimIn.replace("]", "}")
+        strLn += dimIn +";\n"
+        strLn += "static int dimOut_" + str(n) +"[] = "
+        dimOut = str(list(blk.dimPout))
+        dimOut = dimOut.replace("[", "{")
+        dimOut = dimOut.replace("]", "}")
+        strLn += dimOut +";\n"
+        f.write(strLn)
+    f.write("\n")
 
     f.write("/* Nodes */\n")
     for n in range(1,maxNode+1):
@@ -155,6 +171,9 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
 
         strLn =  "  block_" + model + "[" + str(n) + "].nin  = " + str(nin) + ";\n"
         strLn += "  block_" + model + "[" + str(n) + "].nout = " + str(nout) + ";\n"
+        
+        strLn +=  "  block_" + model + "[" + str(n) + "].dimIn  = dimIn_" + str(n) + ";\n"
+        strLn += "  block_" + model + "[" + str(n) + "].dimOut = dimOut_" + str(n) + ";\n"
 
         port = "nx_" + str(n)
         strLn += "  block_" + model + "[" + str(n) + "].nx   = " + port + ";\n"
