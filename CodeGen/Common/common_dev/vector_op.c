@@ -67,7 +67,7 @@ void sum_vec(int Flag, python_block *block)
 {
   int i, k;
   double *y, *u;
-  int n = block->intPar[0];
+  int n = block->dimIn[0];
   int m = block->nin;
 
   switch(Flag){
@@ -92,7 +92,7 @@ void sub_vec(int Flag, python_block *block)
 {
   int i;
   double *y, *u1, *u2;
-  int n = block->intPar[0];
+  int n = block->dimIn[0];
 
   switch(Flag){
   case CG_OUT:

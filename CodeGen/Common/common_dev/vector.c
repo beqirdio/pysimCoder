@@ -55,7 +55,7 @@ void print_vec(int Flag, python_block *block)
     t = get_run_time();  // get the sample time and print it
     printf("%lf\t ",t);
     for(k=0; k<block->nin; k++){    // go to each vector input
-      n = block->intPar[k];      // find vector length of specific input
+      n = block->dimIn[k];      // find vector length of specific input
       u = (double*)block->u[k];   // assign u pointer to each input
       printf("[%lf", u[0]);   // print first vector...
       for(i=1; i<n; i++) {      // ...then the rest
@@ -84,7 +84,7 @@ void gain_vec(int Flag, python_block *block)
   case CG_INIT:
   case CG_END:
     for(k=0; k<block->nin; k++){  // Go to inputs and outputs (equal amount for gain)
-      n = block->intPar[k];  // find vector length for input/output port
+      n = block->dimIn[k];  // find vector length for input/output port
       u = (double*)block->u[k];
       y = (double*)block->y[k];
       for(i=0; i<n; i++) {
