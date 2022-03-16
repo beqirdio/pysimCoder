@@ -13,7 +13,7 @@ The following commands are provided:
   genMake        - Generate the Makefile for the C code
   detBlkSeq      - Get the right block sequence for simulation and RT
   sch2blks       - Generate block list fron schematic
-  
+
 """
 from scipy import mat, size, array, zeros
 from numpy import  nonzero, ones
@@ -53,12 +53,20 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
             if outnodes[blk.pout[n]] == 0:
                 outnodes[blk.pout[n]] = 1
             else:
-                raise ValueError('Problem in diagram: outputs connected together!')           
-    
+                raise ValueError('Problem in diagram: outputs connected together!')
+
+    # Set dimensions of each Node for vector functionality
+    dimNodes = []
+    for n in range(1,maxNode+1):  # Go through each node
+        for blk in blocks:  # Find each block with output
+            for n_id in range(0,len(blk.pout)):   # Give each node its dimension
+                if blk.pout[n_id] == n:
+                    dimNodes.append(blk.dimPout[n_id])
+
     Blocks = detBlkSeq(maxNode, blocks)
     if size(Blocks) == 0:
         raise ValueError('No possible to determine the block sequence')
-    
+
     fn = model + '.c'
     f=open(fn,'w')
     strLn = "#include <pyblock.h>\n#include <stdio.h>\n\n"
@@ -103,7 +111,10 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
 
     f.write("/* Nodes */\n")
     for n in range(1,maxNode+1):
-        strLn = "static double Node_" + str(n) + "[] = {0.0};\n"
+        strLn = "static double Node_" + str(n) + "[] = {0.0"
+        for m in range(1,dimNodes[n-1]): # generate vector node
+            strLn += ",0.0"
+        strLn += "};\n"
         f.write(strLn)
 
     f.write("\n")
@@ -224,7 +235,7 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
             if (blk.nx[0] != 0):
                 strLn = "  block_" + model + "[" + str(n) + "].realPar[0] = h;\n"
                 f.write(strLn)
-            
+
         strLn = "  for(i=0;i<" + str(rkstep) + ";i++){\n"
         f.write(strLn)
         for n in range(0,N):
@@ -293,7 +304,7 @@ def detBlkSeq(Nodes, blocks):
     Returns
     -------
     Blocks    : List with the ordered blocks
-    
+
 """
     class blkDep:
         def __init__(self, block, blkL, nodeL):
@@ -303,9 +314,9 @@ def detBlkSeq(Nodes, blocks):
             if len(block.pin) != 0:
                 for node in block.pin:
                     if nodeL[node].block_in[0].uy == 1:
-                        self.block_in.append(nodeL[node].block_in[0])              
-  
-            
+                        self.block_in.append(nodeL[node].block_in[0])
+
+
         def __str__(self):
             txt  = 'Block: ' + self.block.fcn.__str__() + '\n'
             txt += 'Inputs\n'
@@ -348,7 +359,7 @@ def detBlkSeq(Nodes, blocks):
             for n in blk.pout:
                 nL[n].block_in.append(blk)
         return nL
-    
+
     blks = []
     blks2order = []
 
@@ -365,7 +376,7 @@ def detBlkSeq(Nodes, blocks):
         else:
             block = blkDep(blk, blocks, nodes)
             blks2order.append(block)
-   
+
     # Order the remaining blocks
     counter = 0
     while len(blks2order) != counter:
@@ -393,5 +404,5 @@ def detBlkSeq(Nodes, blocks):
         for item in blks2order:
             print(item.block)
         raise ValueError("Algeabric loop!")
-    
+
     return blks

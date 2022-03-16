@@ -11,20 +11,29 @@ The following class is provided:
 from numpy import array, ones
 
 class RCPblk:
-    def __init__(self, *args):  
+    def __init__(self, *args):
         if len(args) == 8:
             (fcn,pin,pout,nx,uy,realPar,intPar,str) = args
+            dimPin = ones(len(pin), dtype = int)
+            dimPout = ones(len(pout), dtype = int)
         elif len(args) == 7:
             (fcn,pin,pout,nx,uy,realPar,intPar) = args
             str=''
+            dimPin = ones(len(pin), dtype = int)
+            dimPout = ones(len(pout), dtype = int)
+        elif len(args) == 9:
+            (fcn,pin,pout,dimPin,dimPout,nx,uy,realPar,intPar) = args
+            str=''
+        elif len(args) == 10:
+            (fcn,pin,pout,dimPin,dimPout,nx,uy,realPar,intPar,str) = args
         else:
-            raise ValueError("Needs 6 or 7 arguments; received %i." % len(args))
-        
+            raise ValueError("Needs 6 to 9 arguments; received %i." % len(args))
+
         self.fcn = fcn
         self.pin = array(pin)
         self.pout = array(pout)
-        self.dimPin = ones(self.pin.shape)
-        self.dimPout = ones(self.pout.shape)
+        self.dimPin = dimPin
+        self.dimPout = dimPout
         self.nx = array(nx)
         self.uy = array(uy)
         self.realPar = array(realPar)
@@ -44,4 +53,3 @@ class RCPblk:
         str += "Integer parameters : " + self.intPar.__str__() + "\n"
         str += "String Parameter   : " + self.str.__str__() + "\n"
         return str
-

@@ -1,0 +1,1 @@
+{"lib": "vectors", "name": "Vector Mux", "ip": 3, "op": 1, "stin": 1, "stout": 0, "icon": "mux", "params": "muxBlk", "help": "Combine multiple scalar signals into one vector signal.\n\n"}

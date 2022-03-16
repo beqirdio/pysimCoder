@@ -1,0 +1,1 @@
+{"lib": "vectors", "name": "Vector Demux", "ip": 1, "op": 3, "stin": 0, "stout": 1, "icon": "demux", "params": "demuxBlk", "help": "Convert vector signal into multiple scalar signals.\n\n"}
