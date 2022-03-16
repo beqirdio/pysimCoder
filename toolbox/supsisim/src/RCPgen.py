@@ -55,14 +55,6 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
             else:
                 raise ValueError('Problem in diagram: outputs connected together!')
 
-    # Set dimensions of each Node for vector functionality
-    dimNodes = []
-    for n in range(1,maxNode+1):  # Go through each node
-        for blk in blocks:  # Find each block with output
-            for n_id in range(0,len(blk.pout)):   # Give each node its dimension
-                if blk.pout[n_id] == n:
-                    dimNodes.append(blk.dimPout[n_id])
-
     Blocks = detBlkSeq(maxNode, blocks)
     if size(Blocks) == 0:
         raise ValueError('No possible to determine the block sequence')
@@ -109,14 +101,60 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
         f.write(strLn)
     f.write("\n")
 
+    for blk in Blocks:
+        if (len(blk.dimRatio)!=0) and (len(blk.pout)!=0):  # find middle blocks
+            for prt in range(0, len(blk.pin)):# go through each in-port
+                found = False
+                for blk_out in Blocks: # find corresponding block (parent)
+                    for n in range(0, len(blk_out.pout)): # find out-port id
+                        if blk_out.pout[n] == blk.pin[prt]: # matching in-port
+                            blk.dimPin[prt] = blk_out.dimPout[n]
+                            if len(blk.pout) == 1: # for single port output
+                                blk.dimPout[0] = blk.dimPin[prt]
+                            else:  # for 1:1 I/O ports mapping
+                                blk.dimPout[prt] = blk.dimPin[prt]
+                            found = True  # set dimensions of I/O ports
+                            break
+                    if found is True: break # go to next port and do the same
+    for blk in Blocks:
+        if len(blk.pout) == 0:  # find end blocks
+            for prt in range(0, len(blk.pin)):# go through each in-port
+                found = False
+                for blk_out in Blocks: # find corresponding block (parent)
+                    for n in range(0, len(blk_out.pout)): # find out-port id
+                        if blk_out.pout[n] == blk.pin[prt]: # matching in-port
+                            if blk_out.dimPout[n] > 1:
+                                blk.dimPin[prt] = blk_out.dimPout[n]
+                            found = True  # set dimension if higher than 1
+                            break
+                    if found is True: break # go to next port and do the same
+
+    f.write("/* Dimensions */\n")
+    for n in range(0,N):
+        blk = Blocks[n]
+        strLn = "static int dimIn_" + str(n) +"[] = "
+        dimIn = str(list(blk.dimPin))
+        dimIn = dimIn.replace("[", "{")
+        dimIn = dimIn.replace("]", "}")
+        strLn += dimIn +";\n"
+        strLn += "static int dimOut_" + str(n) +"[] = "
+        dimOut = str(list(blk.dimPout))
+        dimOut = dimOut.replace("[", "{")
+        dimOut = dimOut.replace("]", "}")
+        strLn += dimOut +";\n"
+        f.write(strLn)
+    f.write("\n")
+
     f.write("/* Nodes */\n")
     for n in range(1,maxNode+1):
         strLn = "static double Node_" + str(n) + "[] = {0.0"
-        for m in range(1,dimNodes[n-1]): # generate vector node
-            strLn += ",0.0"
+        for blk in Blocks:  # Find each block with output
+            for n_id in range(0,len(blk.pout)):  # Find output with current node
+                if blk.pout[n_id] == n:
+                    for m in range(1,blk.dimPout[n_id]): # generate vector node
+                        strLn += ",0.0"                  # if applicable
         strLn += "};\n"
         f.write(strLn)
-
     f.write("\n")
 
     f.write("/* Input and outputs */\n")
@@ -166,6 +204,9 @@ def genCode(model, Tsamp, blocks, rkstep = 10):
 
         strLn =  "  block_" + model + "[" + str(n) + "].nin  = " + str(nin) + ";\n"
         strLn += "  block_" + model + "[" + str(n) + "].nout = " + str(nout) + ";\n"
+
+        strLn +=  "  block_" + model + "[" + str(n) + "].dimIn  = dimIn_" + str(n) + ";\n"
+        strLn += "  block_" + model + "[" + str(n) + "].dimOut = dimOut_" + str(n) + ";\n"
 
         port = "nx_" + str(n)
         strLn += "  block_" + model + "[" + str(n) + "].nx   = " + port + ";\n"
